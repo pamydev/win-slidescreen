@@ -1,10 +1,12 @@
 {
   "name": "win-slidescreen",
-  "version": "3.0.1",
-  "description": "Plugin WinnetouJs",
-  "main": "src/slideScreen.js",
+  "version": "4.0.0-alpha.1",
+  "description": "A plugin for Winnetou.js that adds slide screen functionality to your application.",
+  "main": "dist/slideScreen.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-types": "tsc --emitDeclarationOnly",
+    "wbr:prod": "node wbr -b -p",
+    "wbr:dev": "node wbr -b -v -w"
   },
   "repository": {
     "type": "git",
@@ -16,10 +18,13 @@
     "winnetou",
     "winnetoujs"
   ],
-  "author": "“Winnetou <“kaue.sedrez@gmail.com”>",
+  "author": "Pamela Sedrez <pamela@cedros.dev> (https://github.com/pamydev)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kauesedrez/win-slidescreen/issues"
   },
-  "homepage": "https://github.com/kauesedrez/win-slidescreen#readme"
+  "homepage": "https://github.com/kauesedrez/win-slidescreen#readme",
+  "dependencies": {
+    "winnetoujs": "^3.1.5"
+  }
 }

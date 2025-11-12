@@ -1,0 +1,5 @@
+{
+  "apps": ["./src/main.ts"],
+  "outputDir": "./dist",
+  "constructosSourceFolder": "./src"
+}
