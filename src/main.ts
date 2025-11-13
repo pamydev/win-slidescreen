@@ -8,7 +8,7 @@ type EasingFunction = (
 ) => number;
 type ScreenMap = { [key: string]: number };
 
-class SlideScreen {
+class __SlideScreen {
   private device: Device;
   private globalScreens: ScreenMap = {};
   private activeScreen: number = 0;
@@ -162,8 +162,8 @@ class SlideScreen {
   }
 }
 
-export const slideScreen = new SlideScreen("desktop");
-export const slideScreenMobile = new SlideScreen("mobile");
+export const SlideScreen = new __SlideScreen("desktop");
+export const SlideScreenMobile = new __SlideScreen("mobile");
 
-import { $screen, $slideScreen } from "./slideScreen.wcto";
-export { $screen, $slideScreen };
+import { $screen, $slideContainer } from "./slideScreen.wcto";
+export { $screen, $slideContainer };

@@ -1,7 +1,7 @@
 import {
  Constructos
 } from "winnetoujs/core/constructos";
-export class $slideScreen extends Constructos {
+export class $slideContainer extends Constructos {
  // ========================================
  /**
   * 
@@ -20,8 +20,8 @@ export class $slideScreen extends Constructos {
   this.component = this.code(
    digestedPropsToString);
   this._saveUsingMutable(
-   `slideScreen-win-${this.identifier}`,
-   elements, options, $slideScreen);
+   `slideContainer-win-${this.identifier}`,
+   elements, options, $slideContainer);
  }
  /**
   * Generate the HTML code for this constructo
@@ -31,7 +31,7 @@ export class $slideScreen extends Constructos {
   */
  code (props) {
   return `
-  <div class="slideScreen" id="slideScreen-win-${this.identifier}"></div>
+  <div class="slideContainer" id="slideContainer-win-${this.identifier}"></div>
 `;
  }
  /**
@@ -46,7 +46,7 @@ export class $slideScreen extends Constructos {
    options);
   return {
    ids: {
-    slideScreen: `slideScreen-win-${this.identifier}`,
+    slideContainer: `slideContainer-win-${this.identifier}`,
    },
   };
  }
