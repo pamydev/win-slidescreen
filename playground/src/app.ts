@@ -97,26 +97,46 @@ const renderApp = () => {
 
   SlideScreenInstance.make(container.ids.slideContainer, "app");
 
-  // content
-  new $content({ text: "Main Page Content" }).create(mainPage.ids.content);
+  // mainPage ===============================
+
+  const mainPageContent = new $content({
+    style: "height:100%; background-color:#ffffaa",
+  }).create(mainPage.ids.content).ids.content;
+  new $content({ text: "Main Page Content 2", style: "height:200px" }).create(
+    mainPageContent
+  );
   new $button({
     text: "Go to Profile",
     onclick: Winnetou.fx(() => myRouter.methods.profile.go()),
-  }).create(mainPage.ids.content);
+  }).create(mainPageContent);
 
-  new $content({ text: "Profile Page Content" }).create(
-    profilePage.ids.content
+  // profilePage ===============================
+
+  const profilePageContent = new $content({
+    style: "height:100%; background-color:#ffaaaa",
+  }).create(profilePage.ids.content).ids.content;
+
+  new $content({ text: "Profile Page Content", style: "height:200px" }).create(
+    profilePageContent
   );
   new $button({
     text: "Go to Menu",
     onclick: Winnetou.fx(() => myRouter.methods.menu.go()),
-  }).create(profilePage.ids.content);
+  }).create(profilePageContent);
 
-  new $content({ text: "Menu Page Content" }).create(menuPage.ids.content);
+  // menuPage ===============================
+
+  const menuPageContent = new $content({
+    style: "height:100%; background-color:#aaaaff",
+  }).create(menuPage.ids.content).ids.content;
+
+  new $content({ text: "Menu Page Content", style: "height:200px" }).create(
+    menuPageContent
+  );
   new $button({
     text: "Go to Main",
     onclick: Winnetou.fx(() => myRouter.methods.main.go()),
-  }).create(menuPage.ids.content);
+  }).create(menuPageContent);
 
   // call initial route
   myRouter.methods.main.go();

@@ -6,7 +6,8 @@ export class $content extends Constructos {
  /**
   * content
   * @param {object} elements
-  * @param {any} elements.text  
+  * @param {any} elements.style  
+  * @param {any} [elements.text]  
   * @param {object} [options]
   * @param {string} [options.identifier]
   */
@@ -32,9 +33,7 @@ export class $content extends Constructos {
   */
  code (props) {
   return `
-  <div id="content-win-${this.identifier}" style="background-color: red; height: 100%">
-    ${props?.text || ""}
-  </div>
+  <div id="content-win-${this.identifier}" style="${props?.style || ""}">${props?.text || ""}</div>
 `;
  }
  /**
