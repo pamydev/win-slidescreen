@@ -1,6 +1,6 @@
 {
   "name": "win-slidescreen",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "A plugin for WinnetouJs that adds slide screen functionality to your application. Version 4 with new features and improvements to be used with WinnetouJs 3+.",
   "main": "dist/main.js",
   "scripts": {

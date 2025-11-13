@@ -14,10 +14,7 @@ if (!fs.existsSync(instructionsDir)) {
 }
 
 ncp(
-  path.join(
-    __dirname,
-    "./instructions/copilot-win-slidescreen.instructions.md"
-  ),
+  path.join(__dirname, "./copilot-win-slidescreen.instructions.md"),
   path.join(
     __dirname,
     "../../../.github/instructions",
