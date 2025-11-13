@@ -4,7 +4,8 @@
   "description": "A plugin for WinnetouJs that adds slide screen functionality to your application. Version 4 with new features and improvements to be used with WinnetouJs 3+.",
   "main": "dist/main.js",
   "scripts": {
-    "compile": "npm run wbr && npm run build-types",
+    "compile": "npm run wbr && npm run build-types && cp -r source/* dist/",
+    "postinstall": "node ./dist/copy-files-postinstall.js",
     "wbr": "node wbr -b -v",
     "build-types": "tsc --emitDeclarationOnly",
     "publish:alpha": "npm publish --tag alpha",
@@ -23,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kauesedrez/win-slidescreen.git"
+    "url": "git+https://github.com/pamydev/win-slidescreen.git"
   },
   "keywords": [
     "plugin",
@@ -34,10 +35,11 @@
   "author": "Pamela Sedrez <pamela@cedros.dev> (https://github.com/pamydev)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kauesedrez/win-slidescreen/issues"
+    "url": "https://github.com/pamydev/win-slidescreen/issues"
   },
-  "homepage": "https://github.com/kauesedrez/win-slidescreen#readme",
+  "homepage": "https://github.com/pamydev/win-slidescreen#readme",
   "dependencies": {
+    "ncp": "^2.0.0",
     "winnetoujs": "^3.1.6"
   },
   "devDependencies": {
