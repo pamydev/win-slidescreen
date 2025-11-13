@@ -1,123 +1,290 @@
-# Definition
+# win-slidescreen
 
-SlideScreen is a WinnetouJs plugin that creates screens that can x-axis scroll content.
+A WinnetouJs plugin that creates beautiful horizontal slide screens for your web applications. Perfect for creating modern, mobile-friendly interfaces with smooth page transitions.
 
-# Imports
+> **⚠️ Important:** This package is designed for **WinnetouJs version 3 and higher**. It will not work with older versions.
 
-```javascript
-import { SlideScreen } from "../node_modules/win-slidescreen/src/slideScreen.js";
-// In mobile use
-// SlideScreenMobile
-import { screen, slideScreen } from "./constructos/slideScreen.js";
+## What is win-slidescreen?
+
+win-slidescreen transforms your web app into a horizontal scrolling experience, similar to modern mobile apps. It automatically adapts to desktop and mobile devices:
+
+- **Desktop**: Horizontal scrolling with instant screen switching
+- **Mobile**: Animated transitions with vertical scrolling within each screen
+
+## Installation
+
+```bash
+npm install win-slidescreen
 ```
 
-# Construction
+## Quick Start
+
+Here's a simple example to get you started:
 
 ```javascript
-// create slideScreen container
-const container = slideScreen().create("#app");
+import { SlideScreen, $screen, $slideContainer } from "win-slidescreen";
 
-// create the screens inside de main container
-mainPage = screen().create(container.ids.slideScreen);
-profilePage = screen().create(container.ids.slideScreen);
-menuPage = screen().create(container.ids.slideScreen);
+// Create the container
+const container = new $slideContainer().create("#app");
+
+// Create your screens
+const homePage = new $screen().create(container.ids.slideContainer);
+const aboutPage = new $screen().create(container.ids.slideContainer);
+
+// Initialize the slide screen system
+SlideScreen.make(container.ids.slideContainer, "app");
+
+// Add content to your screens (always use .ids.content!)
+new MyContent({ title: "Home" }).create(homePage.ids.content);
+new MyContent({ title: "About" }).create(aboutPage.ids.content);
+
+// Navigate between screens
+SlideScreen.scroll(homePage.ids.screen); // Go to home
+SlideScreen.scroll(aboutPage.ids.screen); // Go to about
 ```
 
-# Usage
+## Mobile vs Desktop
+
+The plugin automatically detects the device type, but you can also manually choose which version to use:
 
 ```javascript
-// make
-// param 1: the slidescreen constructo id
-// param 2: the container where slidescreen constructo was created
-SlideScreen.make(container.ids.slideScreen, "app");
+import { SlideScreen, SlideScreenMobile } from "win-slidescreen";
 
-// to scroll
-// param 1: the id of created screen
-SlideScreen.scroll(profilePage.ids.screen);
+// Detect device
+const isMobile = window.innerWidth <= 768;
+const Slider = isMobile ? SlideScreenMobile : SlideScreen;
+
+// Use appropriate animation
+const animation = isMobile ? "animate" : "direct";
+
+Slider.make(container.ids.slideContainer, "app");
+Slider.scroll(somePage.ids.screen, animation);
 ```
 
-# Use sample
+## Important Rules
+
+### ✅ Always add content to `ids.content`
+
+When adding content to screens, **always use `ids.content`**, not `ids.screen`:
 
 ```javascript
-import { SlideScreen } from "../node_modules/win-slidescreen/src/slideScreen.js";
-import { screen, slideScreen } from "./constructos/slideScreen.js";
-import { content, bt } from "./constructos/welcome.js";
-import { Winnetou } from "../node_modules/winnetoujs/src/winnetou.js";
+// ✅ Correct
+new MyComponent().create(homePage.ids.content);
 
-// Register winnetou
-// @ts-ignore
-window.Winnetou = Winnetou;
+// ❌ Wrong - don't do this!
+new MyComponent().create(homePage.ids.screen);
+```
 
-// Winnetou router
-Winnetou.createRoutes({
-  "/": toPage1,
-  "/profile": toPage2,
-  menu,
-});
+### 🎯 Use `ids.screen` only for navigation
 
-// global vars
-var mainPage, profilePage, menuPage;
+The `ids.screen` should only be used when navigating:
 
-const render = () => {
-  // create slideScreen container
-  const container = slideScreen().create("#app");
+```javascript
+// ✅ Correct - use ids.screen for navigation
+SlideScreen.scroll(homePage.ids.screen);
+```
 
-  // create the screens inside de main container
-  mainPage = screen().create(container.ids.slideScreen);
-  profilePage = screen().create(container.ids.slideScreen);
-  menuPage = screen().create(container.ids.slideScreen);
+## Integration with WinnetouJs Router
 
-  // initialize the slideScreen business logic
-  SlideScreen.make(container.ids.slideScreen, "app");
+For a complete single-page application experience, integrate with WinnetouJs Router:
 
-  // add some content to the pages
-  content({ text: "Main Page" }).create(mainPage.ids.screen);
-  bt({
-    text: "Go to profile",
-    action: "Winnetou.navigate('/profile')",
-  }).create(mainPage.ids.screen);
-  content({ text: "Profile Page" }).create(profilePage.ids.screen);
-  bt({ text: "Back Home", action: "Winnetou.navigate('/')" }).create(
-    profilePage.ids.screen
-  );
-  bt({ text: "MENU", action: "Winnetou.pass('menu')" }).create(
-    profilePage.ids.screen
-  );
-  content({ text: "MENU" }).create(menuPage.ids.screen);
+```javascript
+import { Router } from "winnetoujs/modules/router";
+import { SlideScreen, $screen, $slideContainer } from "win-slidescreen";
 
-  // turn global access
-  // @ts-ignore
-  window.toPage2 = toPage2;
-  // @ts-ignore
-  window.toPage1 = toPage1;
-};
+class AppRouter {
+  private routes = {};
+  private SlideScreen;
+  private homeScreen;
+  private aboutScreen;
 
-render();
+  constructor(homeScreen, aboutScreen, SlideScreen) {
+    this.homeScreen = homeScreen;
+    this.aboutScreen = aboutScreen;
+    this.SlideScreen = SlideScreen;
+    this.createRoutes();
+  }
 
-function toPage2() {
-  SlideScreen.scroll(profilePage.ids.screen);
+  public methods = {
+    home: {
+      go: () => Router.navigate("/home"),
+      set: () => {
+        this.routes["/home"] = () => {
+          this.SlideScreen.scroll(this.homeScreen, "direct");
+        };
+      },
+    },
+    about: {
+      go: () => Router.navigate("/about"),
+      set: () => {
+        this.routes["/about"] = () => {
+          this.SlideScreen.scroll(this.aboutScreen, "direct");
+        };
+      },
+    },
+  };
+
+  private createRoutes() {
+    Object.keys(this.methods).forEach(key => {
+      this.methods[key].set();
+    });
+    Router.createRoutes(this.routes);
+  }
 }
 
-function toPage1() {
-  SlideScreen.scroll(mainPage.ids.screen);
-}
+// Use it
+const router = new AppRouter(
+  homeScreen.ids.screen,
+  aboutScreen.ids.screen,
+  SlideScreen
+);
 
-function menu() {
-  SlideScreen.scroll(menuPage.ids.screen);
-}
+router.methods.home.go(); // Navigate to home
 ```
 
-# New in version 3
+## API Reference
 
-Use ids.content to insert data into screen constructo to correct hide scroll in desktop navigation when use "direct" parameter.
+### Constructos
+
+#### `$slideContainer`
+
+Creates the main container that holds all screens.
 
 ```javascript
-content({ text: "Main Page" }).create(mainPage.ids.content);
-
-// but scroll still need the screen id, like version 2:
-SlideScreen.scroll(mainPage.ids.screen, "direct");
+const container = new $slideContainer().create("#app");
+// Returns: { ids: { slideContainer: string } }
 ```
 
-# Scroll Restoration
+#### `$screen`
 
-If you use an scroll restoration own algorithm, add `history.scrollRestoration = "manual"` somewhere in your code to prevent browser to automatic scroll page.
+Creates an individual screen within the container.
+
+```javascript
+const screen = new $screen().create(container.ids.slideContainer);
+// Returns: { ids: { screen: string, content: string } }
+```
+
+### SlideScreen / SlideScreenMobile
+
+Both classes share the same API:
+
+#### `make(containerID, parentID)`
+
+Initializes the slide screen system. Call this after creating all your screens.
+
+```javascript
+SlideScreen.make(container.ids.slideContainer, "app");
+```
+
+- **containerID**: The ID from `$slideContainer`
+- **parentID**: The ID of the parent element (usually "app")
+
+#### `scroll(target, effect?)`
+
+Navigates to a specific screen.
+
+```javascript
+SlideScreen.scroll(screenID, "animate");
+SlideScreen.scroll(0, "direct"); // You can also use screen index
+```
+
+- **target**: Screen ID (string) or screen index (number, 0-based)
+- **effect**: Optional animation type
+  - `"animate"` - Smooth animated transition (recommended for mobile)
+  - `"direct"` - Instant jump (recommended for desktop)
+
+## Required Styles
+
+Make sure your CSS includes these basic styles:
+
+```css
+.slideContainer {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+}
+
+.screen .screenContent {
+  height: 100%;
+}
+```
+
+## Complete Example
+
+Here's a full working example:
+
+```javascript
+import { Winnetou } from "winnetoujs";
+import {
+  SlideScreen,
+  SlideScreenMobile,
+  $screen,
+  $slideContainer,
+} from "win-slidescreen";
+import { Router } from "winnetoujs/modules/router";
+
+// Detect device type
+const isMobile = window.innerWidth <= 768;
+const Slider = isMobile ? SlideScreenMobile : SlideScreen;
+const animation = isMobile ? "animate" : "direct";
+
+// Create container and screens
+const container = new $slideContainer().create("#app");
+const homeScreen = new $screen().create(container.ids.slideContainer);
+const profileScreen = new $screen().create(container.ids.slideContainer);
+const settingsScreen = new $screen().create(container.ids.slideContainer);
+
+// Initialize
+Slider.make(container.ids.slideContainer, "app");
+
+// Add content (use ids.content!)
+new HomeContent().create(homeScreen.ids.content);
+new ProfileContent().create(profileScreen.ids.content);
+new SettingsContent().create(settingsScreen.ids.content);
+
+// Add navigation buttons
+new NavButton({
+  text: "Go to Profile",
+  onclick: Winnetou.fx(() => {
+    Slider.scroll(profileScreen.ids.screen, animation);
+  }),
+}).create(homeScreen.ids.content);
+
+// Start on home screen
+Slider.scroll(homeScreen.ids.screen, "direct");
+```
+
+## Tips and Best Practices
+
+1. **Always initialize after creating screens**: Call `make()` only after all screens are created
+2. **Use the right animation**: "direct" for desktop, "animate" for mobile
+3. **Respect the content rule**: Always add content to `ids.content`, not `ids.screen`
+4. **Mobile-first approach**: Design your content to work vertically on mobile within each screen
+5. **Router integration**: Use WinnetouJs Router for better navigation management
+
+## Version Compatibility
+
+- **win-slidescreen 4.x**: Requires WinnetouJs 3.x or higher
+- **win-slidescreen 3.x and below**: For older WinnetouJs versions
+
+## License
+
+MIT
+
+## Author
+
+Pamela Sedrez - [GitHub](https://github.com/pamydev)
+
+## Support
+
+- [GitHub Issues](https://github.com/pamydev/win-slidescreen/issues)
+- [WinnetouJs Documentation](https://winnetoujs.org)
+
+---
+
+Made with ❤️ for WinnetouJs
